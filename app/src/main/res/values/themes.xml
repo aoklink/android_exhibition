@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:windowAnimationStyle">@style/activityAnimation</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!--<item name="android:windowNoTitle">true</item>-->
+    </style>
+
+    <style name="ThemeLoading" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:windowBackground">@mipmap/loading_splash</item>-->
+        <!--<item name="android:windowAnimationStyle">@style/activityAnimation</item>-->
+        <item name="android:windowIsTranslucent">false</item>
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <!--Dialog 样式的 Activity 主题-->
+    <style name="DialogActivityTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/FrameworkDialogAnimStyle</item>
+    </style>
+</resources>

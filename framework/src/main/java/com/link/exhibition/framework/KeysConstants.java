@@ -11,8 +11,9 @@ public interface KeysConstants {
 
     String APP_NAME = "Linkfeeling";
 
+
     // 字体
-    String NUMBER_FONT = "number_font.ttf";
+    String NUMBER_FONT = "DIN-BlackItalic.otf";
 
     // 网络设置相关
     String USER_AGENT = "User-Agent";
@@ -112,4 +113,14 @@ public interface KeysConstants {
     String ALL = "all";
     String GYM = "gym";
     String FITNESS = "fitness";
+
+    String SERVER_URL = "tcp://post-cn-v0h19rdwa01.mqtt.aliyuncs.com:1883";
+    String INSTANCE_ID = "post-cn-v0h19rdwa01";
+    String ACCESS_KEY = "LTAI4Ffcq3cjnLpxAAk39Tfp";
+    String SECRET_KEY = "RHEY6M0AYYR7kpfCxLf3Qj55N8tqzh";
+    String TOPIC = "tv_topic/yun_xi";
+
+    String SIGNATURE = "Signature|";
+    String SEPARATOR = "|";
+    String GID = "GID_LK_TV@@@";
 }

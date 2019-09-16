@@ -29,7 +29,7 @@ public class RequestBodyFormat {
                 Map<String, String> map = gson.fromJson(requestStr, Map.class);
                 // TODO: 2019/3/19
 //                map.put(KeysConstants.UID, SPUtils.getUID());
-                map.put(KeysConstants.UID, SPUtils.getUID());
+//                map.put(KeysConstants.UID, SPUtils.getUID());
                 map.put(KeysConstants.SESSION_ID, SPUtils.getSessionId());
                 map.put(KeysConstants.USER_TYPE, SPUtils.getUserType());
                 map.put(KeysConstants.REQUEST_TIME, String.valueOf(System.currentTimeMillis()));

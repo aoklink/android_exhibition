@@ -1,7 +1,6 @@
 package com.link.exhibition.framework.base;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
-import com.jude.swipbackhelper.SwipeBackHelper;
 import com.link.exhibition.framework.R;
 import com.link.exhibition.framework.utils.data.DisplayUtils;
 import com.link.exhibition.framework.utils.data.ToastUtils;
@@ -42,21 +40,11 @@ public abstract class FrameworkBaseActivity<V extends BaseMvpView, P extends Bas
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        SwipeBackHelper.onPostCreate(this);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 側滑返回
-        SwipeBackHelper.onCreate(this);
-        SwipeBackHelper.getCurrentPage(this)//获取当前页面
-                .setSwipeBackEnable(true)//设置是否可滑动
-                .setSwipeEdgePercent(0.08f)//可滑动的范围。百分比。0.2表示为左边20%的屏幕
-                .setSwipeSensitivity(0.5f)//敏感程度
-                .setScrimColor(Color.TRANSPARENT)// 底层颜色
-                .setSwipeRelateEnable(true)//是否与下一级activity联动(微信效果)。默认关
-                .setSwipeRelateOffset(200);//activity联动时的偏移量。默认500px。
         setContentView(getLayoutRes());
         // 透明状态栏
         DisplayUtils.translucentStatusBar(this);
@@ -102,7 +90,7 @@ public abstract class FrameworkBaseActivity<V extends BaseMvpView, P extends Bas
 
     @Override
     protected void onDestroy() {
-        SwipeBackHelper.onDestroy(this);
+//        SwipeBackHelper.onDestroy(this);
         if (mAutoCancelToast) {
             ToastUtils.cancel();
         }

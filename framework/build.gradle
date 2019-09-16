@@ -42,4 +42,6 @@ dependencies {
     implementation rootProject.ext.dependencies["logger"]
     implementation rootProject.ext.dependencies["kotlin-stdlib-jdk8"]
     implementation rootProject.ext.dependencies["svprogresshud"]
+    api rootProject.ext.dependencies["mqtt"]
+    api rootProject.ext.dependencies["mqtt-service"]
 }

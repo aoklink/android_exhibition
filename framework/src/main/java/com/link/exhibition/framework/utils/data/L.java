@@ -2,6 +2,7 @@ package com.link.exhibition.framework.utils.data;
 
 import android.util.Log;
 
+import com.link.exhibition.framework.BuildConfig;
 import com.link.exhibition.framework.base.BaseApplication;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -16,7 +17,7 @@ import com.orhanobut.logger.Logger;
 public final class L {
     public static String TAG = BaseApplication.getAppContext().getPackageName();
     // public static boolean DEBUG = BuildConfig.DEBUG;
-    public static boolean DEBUG = true;
+    public static boolean DEBUG =  BuildConfig.DEBUG;
 
     static {
         Logger.addLogAdapter(new AndroidLogAdapter());

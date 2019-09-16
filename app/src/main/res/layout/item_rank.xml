@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/dp15"
+    android:background="@drawable/rank_shap">
+
+    <ImageView
+        android:id="@+id/rank_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp20"
+        android:layout_marginTop="@dimen/dp18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/rank_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp20"
+        android:text="分"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/rank_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <com.link.exhibition.framework.widgets.NumberFontTextView
+        android:id="@+id/rank_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp5"
+        android:textColor="@color/colorWhite"
+        android:textSize="32sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/rank_holder"
+        app:layout_constraintEnd_toStartOf="@id/rank_holder"
+        tools:text="93" />
+
+    <ImageView
+        android:id="@+id/rank_avatar"
+        android:layout_width="@dimen/dp25"
+        android:layout_height="@dimen/dp25"
+        android:layout_marginBottom="@dimen/dp20"
+        android:background="@drawable/bg_shape1"
+        android:padding="@dimen/dp1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/rank_iv"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/rank_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp15"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/rank_avatar"
+        app:layout_constraintStart_toEndOf="@id/rank_avatar"
+        app:layout_constraintTop_toTopOf="@id/rank_avatar"
+        tools:text="Nia Gutkowski" />
+</androidx.constraintlayout.widget.ConstraintLayout>

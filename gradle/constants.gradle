@@ -51,5 +51,9 @@ ext {
 
             // kotlin
             "kotlin-stdlib-jdk8"  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+
+            // mqtt
+            "mqtt"                : 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0',
+            "mqtt-service"        : 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1',
     ]
 }

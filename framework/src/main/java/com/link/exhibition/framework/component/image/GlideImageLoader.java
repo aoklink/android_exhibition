@@ -64,8 +64,6 @@ public final class GlideImageLoader implements LinkImageLoader {
         Glide.with(imageView.getContext())
                 .load(imgUrl)
                 .bitmapTransform(transformations)
-                .error(R.drawable.round_placeholder)
-                .placeholder(R.drawable.round_placeholder)
                 .into(imageView);
     }
 }

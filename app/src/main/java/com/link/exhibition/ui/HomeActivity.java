@@ -111,11 +111,6 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mCacheModules.add(0, new UserRemoteModule());
         mCacheModules.add(1, new UserRemoteModule());
 
-        mRankModules.add(new UserRemoteModule());
-        mRankModules.add(new UserRemoteModule());
-        mRankModules.add(new UserRemoteModule());
-        mRankModules.add(new UserRemoteModule());
-        mRankModules.add(new UserRemoteModule());
         initRecyclerView();
 
         mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(0));
@@ -124,7 +119,19 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(40));
         mTemple2Wave.initWave(true, ColorConstants.loadColors(40));
 
+        initRank(null);
+    }
 
+    private void initRankModules() {
+        if (mRankModules == null) {
+            mRankModules = new ArrayList<>();
+        }
+        mRankModules.clear();
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
     }
 
     private void initRecyclerView() {
@@ -153,7 +160,9 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        MqttManager.getInstance().subscribeToTopic();
+        if (reconnect) {
+            MqttManager.getInstance().subscribeToTopic();
+        }
         L.e("HomeActivity", "reconnect:" + reconnect);
     }
 
@@ -204,15 +213,16 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      * @param score
      */
     private void notifyScoreChanged(ScoreRemoteModule score) {
+        initRank(score == null ? null : score.getRank_data());
         if (mCacheModules.get(0).getUid().equals(score.getUid())) {
             mTemple1Score.setTextSize(NumParseUtil.parseFloat(score.getScore()) > 0 ? 37 : 18);
             mTemple1Score.setText(score.getScore());
+            return;
         }
         if (mCacheModules.get(1).getUid().equals(score.getUid())) {
             mTemple2Score.setTextSize(NumParseUtil.parseFloat(score.getScore()) > 0 ? 37 : 18);
             mTemple2Score.setText(score.getScore());
         }
-        mRankAdapter.setModules(score.getRank_data());
     }
 
 
@@ -225,6 +235,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         if (StringUtils.isEmpty(mCacheModules.get(0).getUid())) {
             mCacheModules.get(0).update(module);
             updateUser1(mCacheModules.get(0));
+            return;
         }
         if (StringUtils.isEmpty(mCacheModules.get(1).getUid())) {
             mCacheModules.get(1).update(module);
@@ -243,6 +254,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             updateUser1(mCacheModules.get(0));
             mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(0));
             mTemple1Wave.initWave(true, ColorConstants.loadColors(0));
+            return;
         }
         if (mCacheModules.get(1).getUid().equals(module.getUid())) {
             mCacheModules.get(1).reset();
@@ -265,6 +277,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             mOffset = HomeActivity.sOffsetCache.get(0);
             mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(heart.getHeart_rate_ratio()));
             mTemple1Wave.initValueManager(0, mOffset.getOffset1(), mOffset.getOffset2(), mOffset.getOffset3(), ColorConstants.loadColors(heart.getHeart_rate_ratio()));
+            return;
         }
 
         if (mCacheModules.get(1).getUid().equals(heart.getUid())) {
@@ -273,7 +286,6 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             mOffset = HomeActivity.sOffsetCache.get(1);
             mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(heart.getHeart_rate_ratio()));
             mTemple2Wave.initValueManager(1, mOffset.getOffset1(), mOffset.getOffset2(), mOffset.getOffset3(), ColorConstants.loadColors(heart.getHeart_rate_ratio()));
-
         }
     }
 
@@ -284,8 +296,10 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      */
     private void notifyRankChanged(HomeRemoteModule module) {
         if (module == null) {
+            initRank(null);
             return;
         }
+        initRank(module.getRank_data());
         // 初始化模板
         List<UserRemoteModule> list = module.getBind_data();
         if (CollectionsUtil.isNotEmpty(list)) {
@@ -299,17 +313,23 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
                 updateUser2(user);
             }
         }
+    }
 
+    private void initRank(List<UserRemoteModule> ranks) {
         // 初始化排行榜
-        List<UserRemoteModule> rank = module.getRank_data();
-        if (CollectionsUtil.size(rank) <= 5) {
-            for (int i = 0; i < CollectionsUtil.size(rank); i++) {
-                mRankModules.get(i).update(rank.get(i));
+        initRankModules();
+        if (CollectionsUtil.isEmpty(ranks)) {
+            mRankAdapter.setModules(mRankModules);
+            return;
+        }
+        if (CollectionsUtil.size(ranks) <= 5) {
+            for (int i = 0; i < CollectionsUtil.size(ranks); i++) {
+                mRankModules.get(i).update(ranks.get(i));
             }
         } else {
-            rank = rank.subList(0, 5);
-            for (int i = 0; i < CollectionsUtil.size(rank); i++) {
-                mRankModules.get(i).update(rank.get(i));
+            ranks = ranks.subList(0, 5);
+            for (int i = 0; i < CollectionsUtil.size(ranks); i++) {
+                mRankModules.get(i).update(ranks.get(i));
             }
         }
         mRankAdapter.setModules(mRankModules);

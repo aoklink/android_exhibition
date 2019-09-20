@@ -118,7 +118,7 @@ public interface KeysConstants {
     String INSTANCE_ID = "post-cn-v0h19rdwa01";
     String ACCESS_KEY = "LTAI4Ffcq3cjnLpxAAk39Tfp";
     String SECRET_KEY = "RHEY6M0AYYR7kpfCxLf3Qj55N8tqzh";
-    String TOPIC = "tv_topic/yun_xi";
+    String TOPIC = "tv_topic/link_zfb";
 
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";

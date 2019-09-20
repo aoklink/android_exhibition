@@ -8,7 +8,7 @@ package com.link.exhibition.framework.bean;
 public final class HomeRequest {
 
     private int type = 100;
-    private String gym_id= "link_test";
+    private String gym_id = "link_zfb";
 
     public int getType() {
         return type;

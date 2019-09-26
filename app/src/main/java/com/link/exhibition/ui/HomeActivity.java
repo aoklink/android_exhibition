@@ -214,6 +214,9 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      */
     private void notifyScoreChanged(ScoreRemoteModule score) {
         initRank(score == null ? null : score.getRank_data());
+        if (score == null) {
+            return;
+        }
         if (mCacheModules.get(0).getUid().equals(score.getUid())) {
             mTemple1Score.setTextSize(NumParseUtil.parseFloat(score.getScore()) > 0 ? 37 : 18);
             mTemple1Score.setText(score.getScore());
@@ -249,6 +252,9 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      * @param module
      */
     private void notifyUnbindChanged(UnbindRemoteModule module) {
+        if (module == null) {
+            return;
+        }
         if (mCacheModules.get(0).getUid().equals(module.getUid())) {
             mCacheModules.get(0).reset();
             updateUser1(mCacheModules.get(0));
@@ -271,6 +277,9 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      * @param heart
      */
     private void notifyHeartChanged(HeartRemoteModule heart) {
+        if (heart == null) {
+            return;
+        }
         if (mCacheModules.get(0).getUid().equals(heart.getUid())) {
             mTemple1Heart.setText(heart.getHeart_rate());
 

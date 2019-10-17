@@ -21,6 +21,16 @@ public final class ImageConstants {
                 return R.mipmap.rank4;
             case 4:
                 return R.mipmap.rank5;
+            case 5:
+                return R.mipmap.rank6;
+            case 6:
+                return R.mipmap.rank7;
+            case 7:
+                return R.mipmap.rank8;
+            case 8:
+                return R.mipmap.rank9;
+            case 9:
+                return R.mipmap.rank10;
         }
         return 0;
     }

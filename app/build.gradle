@@ -58,7 +58,7 @@ android {
         // 生产环境
         prod {
             buildConfigField "int", "ENV", "0"
-            resValue 'string', 'app_name', '云栖展会'
+            resValue 'string', 'app_name', '体能测试'
         }
     }
 }

@@ -10,10 +10,25 @@ import java.util.Locale;
  */
 public final class DateUtils {
 
+
+    public static String PATTERN = "HH:mm";
+    private static SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
+
+    /**
+     * 转换
+     *
+     * @param mm
+     * @return
+     */
+    public static String formatHour(long mm) {
+        return sdf.format(mm);
+    }
+
+
     public static String getDateForEnglish(long time) {
         //注意传入的要是一个毫秒
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("MMMM d",Locale.ENGLISH);
+        SimpleDateFormat sf = new SimpleDateFormat("MMMM",Locale.ENGLISH);
         return sf.format(d);
     }
 

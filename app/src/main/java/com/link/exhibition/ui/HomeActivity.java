@@ -2,6 +2,8 @@ package com.link.exhibition.ui;
 
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.link.exhibition.data.bean.UnbindRemoteModule;
 import com.link.exhibition.data.bean.UserRemoteModule;
 import com.link.exhibition.framework.base.EmptyMvpPresenter;
 import com.link.exhibition.framework.base.FrameworkBaseActivity;
+import com.link.exhibition.framework.bean.HomeRequest;
 import com.link.exhibition.framework.component.image.LinkImageLoader;
 import com.link.exhibition.framework.component.image.transformation.CircleTransform;
 import com.link.exhibition.framework.component.mqtt.MqttManager;
@@ -33,6 +36,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +44,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created on 2019/1/14  18:58
@@ -81,6 +88,9 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
     @BindView(R.id.score_rv)
     RecyclerView mRvRank;
 
+    @BindView(R.id.timer)
+    TextView mTvTimer;
+
     private CircleTransform mCircleTransform;
 
     private List<UserRemoteModule> mCacheModules;
@@ -90,6 +100,16 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
     private RankAdapter mRankAdapter;
 
     private OffsetModule mOffset;
+    private LayoutAnimationController mControllerIn;
+    private LayoutAnimationController mControllerOut;
+    // 注册监听
+    private Disposable mDisposable;
+
+    private Disposable mDisposable1;
+
+    private Disposable mDisposable2;
+
+    private int mCurrentPage = 0;
 
     @Override
     protected int getLayoutRes() {
@@ -111,6 +131,8 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mCacheModules.add(0, new UserRemoteModule());
         mCacheModules.add(1, new UserRemoteModule());
 
+        mControllerIn = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_in_holder);
+        mControllerOut = AnimationUtils.loadLayoutAnimation(this, R.anim.item_rank_out_holder);
         initRecyclerView();
 
         mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(0));
@@ -120,6 +142,19 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mTemple2Wave.initWave(true, ColorConstants.loadColors(40));
 
         initRank(null);
+        initTimer();
+    }
+
+    private void initTimer() {
+        mDisposable1 = Flowable
+                .interval(0, 1, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (!DateUtils.formatHour(System.currentTimeMillis()).equals(mTvTimer.getText().toString())) {
+                        mTvTimer.setText(DateUtils.formatHour(System.currentTimeMillis()));
+                    }
+                });
     }
 
     private void initRankModules() {
@@ -127,6 +162,11 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             mRankModules = new ArrayList<>();
         }
         mRankModules.clear();
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
+        mRankModules.add(new UserRemoteModule());
         mRankModules.add(new UserRemoteModule());
         mRankModules.add(new UserRemoteModule());
         mRankModules.add(new UserRemoteModule());
@@ -140,7 +180,6 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mRvRank.setAdapter(mRankAdapter);
         mRankAdapter.setModules(mRankModules);
     }
-
 
     @NonNull
     @Override
@@ -196,16 +235,24 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
                 notifyScoreChanged(JSON.parseObject(body, ScoreRemoteModule.class));
                 break;
             case 210:
+                initHeartRate();
                 notifyRankChanged(JSON.parseObject(body, HomeRemoteModule.class));
                 break;
         }
         L.e("HomeActivity", "messageArrived:" + body);
     }
 
+    private void initHeartRate() {
+        mDisposable2 = Flowable
+                .interval(0, 1, TimeUnit.MINUTES)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> MqttManager.getInstance().publishMessage(JSON.toJSONString(new HomeRequest(-1))));
+    }
+
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
     }
-
 
     /**
      * 评分变化
@@ -213,7 +260,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      * @param score
      */
     private void notifyScoreChanged(ScoreRemoteModule score) {
-        initRank(score == null ? null : score.getRank_data());
+        updateRank(score == null ? null : score.getRank_data());
         if (score == null) {
             return;
         }
@@ -228,6 +275,34 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         }
     }
 
+    private void updateRank(List<UserRemoteModule> list) {
+        // 初始化排行榜
+        initRankModules();
+        if (CollectionsUtil.isEmpty(list)) {
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            return;
+        }
+        if (CollectionsUtil.size(list) <= 5) {
+            for (int i = 0; i < CollectionsUtil.size(list); i++) {
+                mRankModules.get(i).update(list.get(i));
+            }
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            stopLoop();
+        } else if (CollectionsUtil.size(list) > 5 && CollectionsUtil.size(list) <= 10) {
+            for (int i = 0; i < CollectionsUtil.size(list); i++) {
+                mRankModules.get(i).update(list.get(i));
+            }
+            mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
+            startLoop();
+        } else if ((CollectionsUtil.size(list) > 10)) {
+            list = list.subList(0, 10);
+            for (int i = 0; i < CollectionsUtil.size(list); i++) {
+                mRankModules.get(i).update(list.get(i));
+            }
+            mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
+            startLoop();
+        }
+    }
 
     /**
      * 新增用户
@@ -328,28 +403,42 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         // 初始化排行榜
         initRankModules();
         if (CollectionsUtil.isEmpty(ranks)) {
-            mRankAdapter.setModules(mRankModules);
+            mRvRank.setLayoutAnimation(mControllerIn);
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
             return;
         }
         if (CollectionsUtil.size(ranks) <= 5) {
             for (int i = 0; i < CollectionsUtil.size(ranks); i++) {
                 mRankModules.get(i).update(ranks.get(i));
             }
-        } else {
-            ranks = ranks.subList(0, 5);
+            mRvRank.setLayoutAnimation(mControllerIn);
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            stopLoop();
+        } else if (CollectionsUtil.size(ranks) > 5 && CollectionsUtil.size(ranks) <= 10) {
             for (int i = 0; i < CollectionsUtil.size(ranks); i++) {
                 mRankModules.get(i).update(ranks.get(i));
             }
+            mRvRank.setLayoutAnimation(mControllerIn);
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            startLoop();
+        } else if ((CollectionsUtil.size(ranks) > 10)) {
+            ranks = ranks.subList(0, 10);
+            for (int i = 0; i < CollectionsUtil.size(ranks); i++) {
+                mRankModules.get(i).update(ranks.get(i));
+            }
+            mRvRank.setLayoutAnimation(mControllerIn);
+            mRankAdapter.setModules(mRankModules.subList(0, 5));
+            startLoop();
         }
-        mRankAdapter.setModules(mRankModules);
+
     }
 
     private void updateUser2(UserRemoteModule user) {
         mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(user.getRatio()));
-        LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple2Avatar, mCircleTransform);
+        LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple2Avatar, new CircleTransform(this));
         mTemple2Name.setText(user.getUser_name());
         mTemple2Heart.setText(user.getHeart_rate());
-        mTemple2Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 37 : 18);
+        mTemple2Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 56 : 20);
         mTemple2Score.setText(user.getScore());
         OffsetModule mInflateOffset = HomeActivity.sOffsetCache.get(1);
 
@@ -360,10 +449,10 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
 
     private void updateUser1(UserRemoteModule user) {
         mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(user.getRatio()));
-        LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple1Avatar, mCircleTransform);
+        LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple1Avatar, new CircleTransform(this));
         mTemple1Name.setText(user.getUser_name());
         mTemple1Heart.setText(user.getHeart_rate());
-        mTemple1Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 37 : 18);
+        mTemple1Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 56 : 20);
         mTemple1Score.setText(user.getScore());
         OffsetModule mInflateOffset = HomeActivity.sOffsetCache.get(0);
 
@@ -372,5 +461,46 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mCacheModules.get(0).update(user);
     }
 
+    private void startLoop() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            return;
+        }
+        mDisposable = Flowable
+                .interval(15, 15, TimeUnit.SECONDS)
+                .onBackpressureLatest()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    mRvRank.setLayoutAnimation(mControllerOut);
+                    mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
+                    mCurrentPage++;
+                    if (mCurrentPage >= 2) {
+                        mCurrentPage = 0;
+                    }
+                    postDelay(() -> {
+                        mRvRank.setLayoutAnimation(mControllerIn);
+                        mRankAdapter.setCurrentPage(mCurrentPage);
+                        mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
+                    }, 1200);
+                });
+    }
 
+    private void stopLoop() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing()) {
+            stopLoop();
+            if (mDisposable1 != null && !mDisposable1.isDisposed()) {
+                mDisposable1.dispose();
+                mDisposable1 = null;
+            }
+        }
+
+    }
 }

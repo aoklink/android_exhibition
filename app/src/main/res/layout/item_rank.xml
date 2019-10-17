@@ -35,15 +35,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp5"
         android:textColor="@color/colorWhite"
-        android:textSize="32sp"
+        android:textSize="36sp"
         app:layout_constraintBaseline_toBaselineOf="@id/rank_holder"
         app:layout_constraintEnd_toStartOf="@id/rank_holder"
         tools:text="93" />
 
     <ImageView
         android:id="@+id/rank_avatar"
-        android:layout_width="@dimen/dp25"
-        android:layout_height="@dimen/dp25"
+        android:layout_width="@dimen/dp35"
+        android:layout_height="@dimen/dp35"
         android:layout_marginBottom="@dimen/dp20"
         android:background="@drawable/bg_shape1"
         android:padding="@dimen/dp1"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp15"
         android:textColor="@color/colorWhite"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/rank_avatar"
         app:layout_constraintStart_toEndOf="@id/rank_avatar"
         app:layout_constraintTop_toTopOf="@id/rank_avatar"

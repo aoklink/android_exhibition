@@ -79,7 +79,7 @@ public final class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     L.e(TAG, "subscribe:success");
-                    publishMessage(JSON.toJSONString(new HomeRequest()));
+                    publishMessage(JSON.toJSONString(new HomeRequest(100)));
                 }
 
                 @Override
@@ -94,7 +94,7 @@ public final class MqttManager {
     }
 
 
-    private void publishMessage(String json) {
+    public void publishMessage(String json) {
         try {
             MqttMessage message = new MqttMessage();
             final String msg = json;

@@ -34,14 +34,20 @@ public final class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private CircleTransform mCircleTransform;
 
-    private float mItemWidth = (float) ((DisplayUtils.getScreenWidth()*0.83 - DisplayUtils.dp2px(60)) / 5);
+    private int mCurrentPage = 0;
 
-    public RankAdapter(Context mContext) {
+    private float mItemWidth = (float) ((DisplayUtils.getScreenWidth() * 0.90 - DisplayUtils.dp2px(60)) / 5);
+
+    RankAdapter(Context mContext) {
         this.mContext = mContext;
         mCircleTransform = new CircleTransform(mContext);
     }
 
-    public void setModules(List<UserRemoteModule> mModules) {
+    public void setCurrentPage(int mCurrentPage) {
+        this.mCurrentPage = mCurrentPage;
+    }
+
+    void setModules(List<UserRemoteModule> mModules) {
         this.mModules = mModules;
         notifyDataSetChanged();
     }
@@ -57,7 +63,7 @@ public final class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         UserRemoteModule module = mModules.get(position);
         RankHolder rankHolder = (RankHolder) holder;
 
-        rankHolder.mIvRank.setImageResource(ImageConstants.matchRankImage(position));
+        rankHolder.mIvRank.setImageResource(ImageConstants.matchRankImage(mCurrentPage * 5 + position));
         LinkImageLoader.INSTANCE.load(module.getHead_icon(), rankHolder.mRankAvatar, mCircleTransform);
 
         rankHolder.mRankScore.setText(module.getScore1());

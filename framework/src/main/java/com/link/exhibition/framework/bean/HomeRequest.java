@@ -1,5 +1,7 @@
 package com.link.exhibition.framework.bean;
 
+import com.link.exhibition.framework.KeysConstants;
+
 /**
  * Created on 2019/9/9  14:49
  * chenpan pan.chen@linkfeeling.cn
@@ -7,8 +9,12 @@ package com.link.exhibition.framework.bean;
 @SuppressWarnings("unused")
 public final class HomeRequest {
 
-    private int type = 100;
-    private String gym_id = "link_zfb";
+    private int type;
+    private String gym_id = KeysConstants.GYM_NAME;
+
+    public HomeRequest(int type) {
+        this.type = type;
+    }
 
     public int getType() {
         return type;

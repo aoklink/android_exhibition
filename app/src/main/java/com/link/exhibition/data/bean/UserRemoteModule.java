@@ -54,7 +54,7 @@ public final class UserRemoteModule {
     }
     public String getResultStr() {
         if (heart_rate_ratio < 1) {
-            return "";
+            return "-";
         }
         if (heart_rate_ratio <= 39) {
             return "激活放松";

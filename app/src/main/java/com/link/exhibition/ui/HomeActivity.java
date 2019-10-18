@@ -265,6 +265,8 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         // 初始化排行榜
         initRankModules();
         if (CollectionsUtil.isEmpty(list)) {
+            mCurrentPage=0;
+            mRankAdapter.setCurrentPage(mCurrentPage);
             mRankAdapter.setModules(mRankModules.subList(0, 5));
             return;
         }
@@ -272,12 +274,15 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             for (int i = 0; i < CollectionsUtil.size(list); i++) {
                 mRankModules.get(i).update(list.get(i));
             }
+            mCurrentPage=0;
+            mRankAdapter.setCurrentPage(mCurrentPage);
             mRankAdapter.setModules(mRankModules.subList(0, 5));
             stopLoop();
         } else if (CollectionsUtil.size(list) > 5 && CollectionsUtil.size(list) <= 10) {
             for (int i = 0; i < CollectionsUtil.size(list); i++) {
                 mRankModules.get(i).update(list.get(i));
             }
+            mRankAdapter.setCurrentPage(mCurrentPage);
             mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
             startLoop();
         } else if ((CollectionsUtil.size(list) > 10)) {
@@ -285,6 +290,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
             for (int i = 0; i < CollectionsUtil.size(list); i++) {
                 mRankModules.get(i).update(list.get(i));
             }
+            mRankAdapter.setCurrentPage(mCurrentPage);
             mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
             startLoop();
         }

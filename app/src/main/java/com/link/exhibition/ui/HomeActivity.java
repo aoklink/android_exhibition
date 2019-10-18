@@ -1,7 +1,6 @@
 package com.link.exhibition.ui;
 
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
@@ -25,7 +24,6 @@ import com.link.exhibition.framework.component.image.transformation.CircleTransf
 import com.link.exhibition.framework.component.mqtt.MqttManager;
 import com.link.exhibition.framework.utils.data.L;
 import com.link.exhibition.framework.utils.data.StringUtils;
-import com.link.exhibition.framework.widgets.NumParseUtil;
 import com.link.exhibition.mvp.common.MvpPresenter;
 import com.link.exhibition.utils.CollectionsUtil;
 import com.link.exhibition.utils.DateUtils;
@@ -138,8 +136,8 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(0));
         mTemple1Wave.initWave(true, ColorConstants.loadColors(0));
 
-        mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(40));
-        mTemple2Wave.initWave(true, ColorConstants.loadColors(40));
+        mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(0));
+        mTemple2Wave.initWave(true, ColorConstants.loadColors(0));
 
         initRank(null);
         initTimer();
@@ -261,18 +259,6 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
      */
     private void notifyScoreChanged(ScoreRemoteModule score) {
         updateRank(score == null ? null : score.getRank_data());
-        if (score == null) {
-            return;
-        }
-        if (mCacheModules.get(0).getUid().equals(score.getUid())) {
-            mTemple1Score.setTextSize(NumParseUtil.parseFloat(score.getScore()) > 0 ? 37 : 18);
-            mTemple1Score.setText(score.getScore());
-            return;
-        }
-        if (mCacheModules.get(1).getUid().equals(score.getUid())) {
-            mTemple2Score.setTextSize(NumParseUtil.parseFloat(score.getScore()) > 0 ? 37 : 18);
-            mTemple2Score.setText(score.getScore());
-        }
     }
 
     private void updateRank(List<UserRemoteModule> list) {
@@ -340,8 +326,8 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         if (mCacheModules.get(1).getUid().equals(module.getUid())) {
             mCacheModules.get(1).reset();
             updateUser2(mCacheModules.get(1));
-            mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(40));
-            mTemple2Wave.initWave(true, ColorConstants.loadColors(40));
+            mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(0));
+            mTemple2Wave.initWave(true, ColorConstants.loadColors(0));
         }
     }
 
@@ -357,7 +343,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         }
         if (mCacheModules.get(0).getUid().equals(heart.getUid())) {
             mTemple1Heart.setText(heart.getHeart_rate());
-
+            mTemple1Score.setText(heart.getResultStr());
             mOffset = HomeActivity.sOffsetCache.get(0);
             mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(heart.getHeart_rate_ratio()));
             mTemple1Wave.initValueManager(0, mOffset.getOffset1(), mOffset.getOffset2(), mOffset.getOffset3(), ColorConstants.loadColors(heart.getHeart_rate_ratio()));
@@ -366,7 +352,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
 
         if (mCacheModules.get(1).getUid().equals(heart.getUid())) {
             mTemple2Heart.setText(heart.getHeart_rate());
-
+            mTemple2Score.setText(heart.getResultStr());
             mOffset = HomeActivity.sOffsetCache.get(1);
             mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(heart.getHeart_rate_ratio()));
             mTemple2Wave.initValueManager(1, mOffset.getOffset1(), mOffset.getOffset2(), mOffset.getOffset3(), ColorConstants.loadColors(heart.getHeart_rate_ratio()));
@@ -438,8 +424,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple2Avatar, new CircleTransform(this));
         mTemple2Name.setText(user.getUser_name());
         mTemple2Heart.setText(user.getHeart_rate());
-        mTemple2Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 56 : 20);
-        mTemple2Score.setText(user.getScore());
+        mTemple2Score.setText(user.getResultStr());
         OffsetModule mInflateOffset = HomeActivity.sOffsetCache.get(1);
 
         mTemple2Cl.setBackgroundColor(ColorConstants.loadColor(user.getRatio()));
@@ -452,8 +437,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
         LinkImageLoader.INSTANCE.load(user.getHead_icon(), mTemple1Avatar, new CircleTransform(this));
         mTemple1Name.setText(user.getUser_name());
         mTemple1Heart.setText(user.getHeart_rate());
-        mTemple1Score.setTextSize(TypedValue.COMPLEX_UNIT_SP, user.isScore() ? 56 : 20);
-        mTemple1Score.setText(user.getScore());
+        mTemple1Score.setText(user.getResultStr());
         OffsetModule mInflateOffset = HomeActivity.sOffsetCache.get(0);
 
         mTemple1Cl.setBackgroundColor(ColorConstants.loadColor(user.getRatio()));
@@ -480,7 +464,7 @@ public final class HomeActivity extends FrameworkBaseActivity implements MqttCal
                         mRvRank.setLayoutAnimation(mControllerIn);
                         mRankAdapter.setCurrentPage(mCurrentPage);
                         mRankAdapter.setModules(mRankModules.subList(mCurrentPage * 5, mCurrentPage * 5 + 5));
-                    }, 1200);
+                    }, 700);
                 });
     }
 

@@ -19,6 +19,26 @@ public final class HeartRemoteModule {
     private String uid;
     private String heart_rate;
 
+    public String getResultStr() {
+        if (heart_rate_ratio < 1) {
+            return "";
+        }
+        if (heart_rate_ratio <= 39) {
+            return "激活放松";
+        } else if (heart_rate_ratio <= 55) {
+            return "动态热身";
+        } else if (heart_rate_ratio <= 69) {
+            return "脂肪燃烧";
+        } else if (heart_rate_ratio <= 79) {
+            return "有氧耐力";
+        } else if (heart_rate_ratio <= 89) {
+            return "无氧耐力";
+        } else if (heart_rate_ratio <= 99) {
+            return "峰值锻炼";
+        }
+        return "峰值锻炼";
+    }
+
     public int getHeart_rate_ratio() {
         return heart_rate_ratio;
     }

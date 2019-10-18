@@ -25,7 +25,7 @@ public final class UserRemoteModule {
     private int heart_rate_ratio;
     private String heart_rate;
 
-    public String getUid() {
+     public String getUid() {
         return uid == null ? "" : uid;
     }
 
@@ -50,15 +50,26 @@ public final class UserRemoteModule {
     }
 
     public String getScore() {
-        return StringUtils.isEmpty(score)  ? "测试中" : score;
-    }
-
-    public String getScoreN() {
         return StringUtils.isEmpty(score) ? "" : score;
     }
-
-    public boolean isScore() {
-        return StringUtils.isNotEmpty(score);
+    public String getResultStr() {
+        if (heart_rate_ratio < 1) {
+            return "";
+        }
+        if (heart_rate_ratio <= 39) {
+            return "激活放松";
+        } else if (heart_rate_ratio <= 55) {
+            return "动态热身";
+        } else if (heart_rate_ratio <= 69) {
+            return "脂肪燃烧";
+        } else if (heart_rate_ratio <= 79) {
+            return "有氧耐力";
+        } else if (heart_rate_ratio <= 89) {
+            return "无氧耐力";
+        } else if (heart_rate_ratio <= 99) {
+            return "峰值锻炼";
+        }
+        return "峰值锻炼";
     }
 
     public String getScore1() {
@@ -98,7 +109,7 @@ public final class UserRemoteModule {
         this.uid = module.getUid();
         this.user_name = module.getUser_name();
         this.head_icon = module.getHead_icon();
-        this.score = module.getScoreN();
+        this.score = module.getScore();
         this.heart_rate = module.getHeart_rate();
         this.heart_rate_ratio = module.getRatio();
     }

@@ -124,4 +124,11 @@ public interface KeysConstants {
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
     String GID = "GID_LK_TV@@@";
+
+    //    测试环境:
+//    instanceId:post-cn-0pp1bk98n05
+//    ServiceUrl:post-cn-0pp1bk98n05.mqtt.aliyuncs.com
+//    线上环境:
+//    instanceId:post-cn-v0h19rdwa01
+//    ServiceUrl:post-cn-v0h19rdwa01.mqtt.aliyuncs.com
 }

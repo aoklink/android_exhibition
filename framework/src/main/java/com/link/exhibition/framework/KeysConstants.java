@@ -118,13 +118,13 @@ public interface KeysConstants {
     String INSTANCE_ID = "post-cn-v0h19rdwa01";
     String ACCESS_KEY = "LTAI4Ffcq3cjnLpxAAk39Tfp";
     String SECRET_KEY = "RHEY6M0AYYR7kpfCxLf3Qj55N8tqzh";
-//    String GYM_NAME = "rl_jinhua_fitness";
-    String GYM_NAME = "link_office";
-    String TOPIC = "tv_topic/"+GYM_NAME;
+    String GYM_NAME = "rl_jinhua_fitness";
+    //    String GYM_NAME = "link_office";
+    String TOPIC = "tv_topic/" + GYM_NAME;
 
     String SIGNATURE = "Signature|";
     String SEPARATOR = "|";
-    String GID = "GID_LK_TV@@@";
+    String GID = "GID_LK_TV@@@_" + GYM_NAME + "_";
 
     //    测试环境:
 //    instanceId:post-cn-0pp1bk98n05
